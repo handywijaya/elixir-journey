@@ -1,5 +1,6 @@
 defmodule BookVaultWeb.Router do
   use BookVaultWeb, :router
+  use Plug.ErrorHandler
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -7,6 +8,20 @@ defmodule BookVaultWeb.Router do
 
   scope "/api", BookVaultWeb do
     pipe_through :api
+
+    get "/hello", HelloController, :index
+
+    post "/books", BookController, :create
+    get "/books", BookController, :index
+    put "/books/:id", BookController, :update
+    delete "/books/:id", BookController, :delete
+  end
+
+  def handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
+    body = %{error: Phoenix.Controller.status_message_from_template("#{conn.status}.json")} |> Jason.encode!()
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(conn.status || 500, body)
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

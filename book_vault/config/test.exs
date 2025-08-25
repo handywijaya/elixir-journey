@@ -7,7 +7,7 @@ import Config
 # Run `mix help test` for more information.
 config :book_vault, BookVault.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "",
   hostname: "localhost",
   database: "book_vault_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,

@@ -1,0 +1,25 @@
+<div class="bg-slate-200 flex items-center justify-center w-full h-screen">
+  <div class="bg-white p-8 rounded shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-6">Elixir Journey 🚀</h1>
+    <p class="mb-6">A learning portfolio demonstrating growth in Elixir & Phoenix</p>
+    <ul class="list-disc list-inside">
+      <li
+        :for={
+          {text, path} <- [
+            {"Thermostat", ~p"/thermostat"}
+          ]
+        }
+        class="mb-2"
+      >
+        <.link navigate={path} class="text-indigo-600 hover:underline">{text}</.link>
+      </li>
+    </ul>
+  </div>
+
+  <footer class="absolute bottom-0 text-slate-600 pb-2">
+    &copy; {Date.utc_today().year}
+    <a href="https://github.com/handywijaya" class="hover:underline">
+      Handy Wijaya
+    </a>
+  </footer>
+</div>

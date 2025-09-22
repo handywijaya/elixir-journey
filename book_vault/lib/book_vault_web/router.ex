@@ -20,6 +20,7 @@ defmodule BookVaultWeb.Router do
 
     get "/", PageController, :home
     live "/thermostat", ThermostatLive
+    live "/library", LibraryLive
   end
 
   scope "/api", BookVaultWeb do

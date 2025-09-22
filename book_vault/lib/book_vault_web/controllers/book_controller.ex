@@ -1,14 +1,17 @@
 defmodule BookVaultWeb.BookController do
   use BookVaultWeb, :controller
-  alias BookVault.Books
+
+  defp book_api do
+    Application.get_env(:book_vault, :book_api)
+  end
 
   def index(conn, _args) do
     conn
-    |> json(Books.list_books())
+    |> json(book_api().list_books())
   end
 
   def create(conn, %{"book" => book_params}) do
-    case Books.create_book(book_params) do
+    case book_api().create_book(book_params) do
       {:ok, book} ->
         json(conn, %{message: "Book created successfully!", book: book})
       {:error, changeset} ->
@@ -23,9 +26,9 @@ defmodule BookVaultWeb.BookController do
 
   def update(conn, %{"id" => id, "book" => book_params}) do
     try do
-      book = Books.get_book!(id)
+      book = book_api().get_book!(id)
 
-      case Books.update_book(book, book_params) do
+      case book_api().update_book(book, book_params) do
         {:ok, updated_book} ->
           json(conn, %{message: "Book updated successfully!", book: updated_book})
         {:error, changeset} ->
@@ -46,9 +49,9 @@ defmodule BookVaultWeb.BookController do
 
   def delete(conn, %{"id" => id}) do
     try do
-      book = Books.get_book!(id)
+      book = book_api().get_book!(id)
 
-      case Books.delete_book(book) do
+      case book_api().delete_book(book) do
         {:ok, deleted_book} ->
           json(conn, %{message: "Book #{deleted_book.id} deleted successfully!"})
         {:error, changeset} ->
@@ -72,6 +75,9 @@ defmodule BookVaultWeb.BookController do
       Enum.reduce(opts, msg, fn {key, value}, acc ->
         String.replace(acc, "%{#{key}}", to_string(value))
       end)
+    end)
+    |> Enum.flat_map(fn {field, messages} ->
+      Enum.map(messages, fn msg -> "#{field} #{msg}" end)
     end)
   end
 end

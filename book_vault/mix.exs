@@ -61,7 +61,8 @@ defmodule BookVault.MixProject do
        sparse: "optimized",
        app: false,
        compile: false,
-       depth: 1}
+       depth: 1},
+      {:lazy_html, ">= 0.1.0", only: :test}
     ]
   end
 

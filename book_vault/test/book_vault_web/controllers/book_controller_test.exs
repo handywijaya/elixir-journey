@@ -30,9 +30,9 @@ defmodule BookVaultWeb.BookControllerTest do
       response = json_response(conn, 400)
 
       assert response["errorCode"] == "validation_failed"
-      assert response["errorMessage"]["author"] == ["can't be blank"]
+      assert Enum.at(response["errorMessage"], 0) == "author can't be blank"
 
-
+      # ---------------------------
       conn = post(conn, "/api/books", %{"book" => %{
         "author" => "some author",
         "title" => nil,
@@ -42,7 +42,20 @@ defmodule BookVaultWeb.BookControllerTest do
       response = json_response(conn, 400)
 
       assert response["errorCode"] == "validation_failed"
-      assert response["errorMessage"]["title"] == ["can't be blank"]
+      assert Enum.at(response["errorMessage"], 0) == "title can't be blank"
+
+      # ---------------------------
+      conn = post(conn, "/api/books", %{"book" => %{
+        "author" => nil,
+        "title" => nil,
+        "description" => "some description"
+      }})
+
+      response = json_response(conn, 400)
+
+      assert response["errorCode"] == "validation_failed"
+      assert Enum.at(response["errorMessage"], 0) == "title can't be blank"
+      assert Enum.at(response["errorMessage"], 1) == "author can't be blank"
     end
 
     test "POST /api/books return 400 duplicate data", %{conn: conn} do
@@ -57,7 +70,7 @@ defmodule BookVaultWeb.BookControllerTest do
       response = json_response(conn, 400)
 
       assert response["errorCode"] == "validation_failed"
-      assert response["errorMessage"]["title"] == ["has already been taken"]
+      assert Enum.at(response["errorMessage"], 0) == "title has already been taken"
     end
   end
 
@@ -153,7 +166,7 @@ defmodule BookVaultWeb.BookControllerTest do
       response = json_response(conn, 400)
 
       assert response["errorCode"] == "validation_failed"
-      assert response["errorMessage"]["title"] == ["has already been taken"]
+      assert Enum.at(response["errorMessage"], 0) == "title has already been taken"
     end
   end
 
